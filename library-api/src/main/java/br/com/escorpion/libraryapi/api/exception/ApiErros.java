@@ -4,7 +4,6 @@ import br.com.escorpion.libraryapi.exception.BusinessException;
 import org.springframework.validation.BindingResult;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ApiErros {

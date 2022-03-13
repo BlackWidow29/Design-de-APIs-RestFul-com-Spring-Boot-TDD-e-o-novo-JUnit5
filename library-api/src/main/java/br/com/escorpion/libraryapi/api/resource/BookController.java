@@ -1,23 +1,18 @@
 package br.com.escorpion.libraryapi.api.resource;
 
-import br.com.escorpion.libraryapi.exception.BusinessException;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.*;
-
 import br.com.escorpion.libraryapi.api.dto.BookDTO;
+import br.com.escorpion.libraryapi.api.exception.ApiErros;
 import br.com.escorpion.libraryapi.api.model.entity.Book;
 import br.com.escorpion.libraryapi.api.service.BookService;
+import br.com.escorpion.libraryapi.exception.BusinessException;
+import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
-import java.util.List;
-
-import br.com.escorpion.libraryapi.api.exception.ApiErros;
-import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/books")
