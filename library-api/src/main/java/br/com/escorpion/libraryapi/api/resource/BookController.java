@@ -41,14 +41,33 @@ public class BookController {
     }
 
     @GetMapping("{id}")
-    public BookDTO get(@PathVariable Long id){
+    public BookDTO get(@PathVariable Long id) {
         return bookService.getById(id).map(book -> modelMapper.map(book, BookDTO.class))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
+
+    @DeleteMapping("{id}")
+    @ResponseStatus(code = HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
+        Book book = bookService.getById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        bookService.delete(book);
+    }
+
+    @PutMapping("{id}")
+    public BookDTO update(@PathVariable Long id, BookDTO bookDTO) {
+        return bookService.getById(id)
+                .map(book -> {
+                    book.setAuthor(bookDTO.getAuthor());
+                    book.setTitle(bookDTO.getTitle());
+                    book = bookService.update(book);
+                    return modelMapper.map(book, BookDTO.class);
+                })
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiErros handleValidationExceptions(MethodArgumentNotValidException exception){
+    public ApiErros handleValidationExceptions(MethodArgumentNotValidException exception) {
         BindingResult bindingResult = exception.getBindingResult();
 
         return new ApiErros(bindingResult);
@@ -56,13 +75,13 @@ public class BookController {
 
     @ExceptionHandler(BusinessException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiErros handleBusinessException(BusinessException exception){
+    public ApiErros handleBusinessException(BusinessException exception) {
         return new ApiErros(exception);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiErros handleBusinessException(IllegalArgumentException exception){
+    public ApiErros handleBusinessException(IllegalArgumentException exception) {
         return new ApiErros(exception);
     }
 }

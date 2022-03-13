@@ -27,6 +27,17 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Optional<Book> getById(long id) {
-        return Optional.of(repository.getById(id));
+        return this.repository.findById(id);
+    }
+
+    @Override
+    public void delete(Book book) {
+        repository.delete(book);
+    }
+
+    @Override
+    public Book update(Book book) {
+        book = repository.save(book);
+        return book;
     }
 }
