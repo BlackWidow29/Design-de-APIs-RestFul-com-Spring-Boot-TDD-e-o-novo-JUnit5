@@ -20,6 +20,10 @@ public class ApiErros {
         this.errors = List.of(exception.getMessage());
     }
 
+    public ApiErros(IllegalArgumentException exception) {
+        this.errors = List.of(exception.getMessage());
+    }
+
     public List<String> getErrors() {
         return errors;
     }

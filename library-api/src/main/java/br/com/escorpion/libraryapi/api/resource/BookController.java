@@ -17,14 +17,15 @@ import javax.validation.Valid;
 import java.util.List;
 
 import br.com.escorpion.libraryapi.api.exception.ApiErros;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/books")
 public class BookController {
 
-    private final BookService bookService;
+    private BookService bookService;
 
-    private final ModelMapper modelMapper;
+    private ModelMapper modelMapper;
 
     public BookController(BookService bookService, ModelMapper modelMapper) {
         this.bookService = bookService;
@@ -39,6 +40,12 @@ public class BookController {
         return modelMapper.map(entity, BookDTO.class);
     }
 
+    @GetMapping("{id}")
+    public BookDTO get(@PathVariable Long id){
+        return bookService.getById(id).map(book -> modelMapper.map(book, BookDTO.class))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiErros handleValidationExceptions(MethodArgumentNotValidException exception){
@@ -50,6 +57,12 @@ public class BookController {
     @ExceptionHandler(BusinessException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiErros handleBusinessException(BusinessException exception){
+        return new ApiErros(exception);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiErros handleBusinessException(IllegalArgumentException exception){
         return new ApiErros(exception);
     }
 }

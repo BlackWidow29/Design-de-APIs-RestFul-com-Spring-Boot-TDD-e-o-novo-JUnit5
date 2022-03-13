@@ -26,6 +26,7 @@ import br.com.escorpion.libraryapi.api.dto.BookDTO;
 import br.com.escorpion.libraryapi.api.model.entity.Book;
 import br.com.escorpion.libraryapi.api.service.BookService;
 
+import java.util.Optional;
 import java.util.regex.Matcher;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -49,14 +50,9 @@ public class BookControllerTest {
     @DisplayName("Deve criar um livro com sucesso.")
     public void createBookTest() throws Exception {
 
-        var bookDTO = createNewBook();
+        var bookDTO = createNewBookDto();
 
-        var book = Book.builder()
-        .id(10L)
-        .author("Autor")
-        .title("Meu Livro")
-        .isbn("1213212")
-        .build();
+        var book = createNewBook();
 
         BDDMockito.given(service.save(Mockito.any(Book.class))).willReturn(book);
 
@@ -77,6 +73,15 @@ public class BookControllerTest {
                 .andExpect(jsonPath("isbn").value(bookDTO.getIsbn()));
     }
 
+    private Book createNewBook() {
+        return Book.builder()
+                .id(10L)
+                .author("Autor")
+                .title("Meu Livro")
+                .isbn("1213212")
+                .build();
+    }
+
     @Test
     @DisplayName("Deve lançar erro de validação quando não houver dados suficientes para criação do livro.")
     public void createInvalidBookTest() throws Exception {
@@ -89,15 +94,15 @@ public class BookControllerTest {
                 .content(json);
 
         mockMvc
-                .perform(request)
+                .   perform(request)
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("errors", hasSize(3)));
+                .andExpect(jsonPath("errors", hasSize(1)));
     }
 
     @Test
     @DisplayName("Deve lançar erro ao tentar cadastrar um livro com isbn já utilizado por outro")
     public void createBookWithDuplicateIsbn() throws Exception {
-        BookDTO newBook = createNewBook();
+        BookDTO newBook = createNewBookDto();
         String mensagemErro = "Isbn já cadastrado";
 
         String json = new ObjectMapper().writeValueAsString(newBook);
@@ -117,11 +122,45 @@ public class BookControllerTest {
 
     }
 
-    private BookDTO createNewBook() {
+    private BookDTO createNewBookDto() {
         return BookDTO.builder()
                 .author("Autor")
                 .title("Meu Livro")
                 .isbn("1213212")
                 .build();
     }
+
+    @Test
+    @DisplayName("Deve obter informações de um livro")
+    public void getBookDetailsTest() throws Exception {
+        long id = 11L;
+
+        BDDMockito.given(service.getById(id)).willReturn(Optional.of(createNewBook()));
+
+        var request = MockMvcRequestBuilders
+                .get(BOOK_API.concat("/"+id))
+                .accept(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("id").isNotEmpty())
+                .andExpect(jsonPath("title").value(createNewBookDto().getTitle()))
+                .andExpect(jsonPath("author").value(createNewBookDto().getAuthor()))
+                .andExpect(jsonPath("isbn").value(createNewBookDto().getIsbn()));;
+    }
+
+    @Test
+    @DisplayName("Deve retornar resource not found quando o livro procurado não existir")
+    public void bookNotFoundTest() throws Exception {
+
+        BDDMockito.given(service.getById(Mockito.anyLong())).willReturn(Optional.empty());
+
+        var request = MockMvcRequestBuilders
+                .get(BOOK_API.concat("/"+1))
+                .accept(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(request)
+                .andExpect(status().isNotFound());
+    }
+
 }
