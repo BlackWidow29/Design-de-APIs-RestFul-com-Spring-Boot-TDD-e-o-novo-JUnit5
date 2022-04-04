@@ -12,6 +12,10 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 @DataJpaTest
@@ -29,18 +33,44 @@ public class BookRepositoryTest {
         //cenario
 
         String isbn = "1234";
-        Book book = Book.builder()
-                .title("Aventuras")
-                .author("Fulano")
-                .isbn("1234")
-                .build();
+        Book book = createNewBook(isbn);
         testEntityManager.persist(book);
 
         //execução
         boolean exists = bookRepository.existsByIsbn(isbn);
 
         //verificacao
-        Assertions.assertThat(exists).isTrue();
+        assertThat(exists).isTrue();
+    }
+
+    @Test
+    @DisplayName("Deve retornar false quando não existir um livro na base com o isbn informado")
+    public void returnFalseWhenIsbnNotExists(){
+        String isbn = "123";
+
+        boolean exists = bookRepository.existsByIsbn(isbn);
+
+        assertThat(exists).isFalse();
+    }
+
+    @Test
+    @DisplayName("Deve obter um livro por id")
+    public void findByIdTest(){
+        Book book = createNewBook("123");
+
+        testEntityManager.persist(book);
+
+        Optional<Book> foundBook = bookRepository.findById(book.getId());
+
+        assertThat(foundBook.isPresent()).isTrue();
+    }
+
+    private Book createNewBook(String isbn) {
+        return Book.builder()
+                .title("Aventuras")
+                .author("Fulano")
+                .isbn(isbn)
+                .build();
     }
 
 }
