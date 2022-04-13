@@ -2,10 +2,9 @@ package br.com.escorpion.libraryapi.api.dto;
 
 import lombok.*;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
-@RequiredArgsConstructor
+@NoArgsConstructor
 @Builder
 public class LoanDTO {
 
