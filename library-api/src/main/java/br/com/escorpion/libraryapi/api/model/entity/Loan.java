@@ -25,7 +25,8 @@ public class Loan {
     @Column
     private String customer;
 
-    @Column
+    @JoinColumn
+    @ManyToOne
     private Book book;
 
     @Column

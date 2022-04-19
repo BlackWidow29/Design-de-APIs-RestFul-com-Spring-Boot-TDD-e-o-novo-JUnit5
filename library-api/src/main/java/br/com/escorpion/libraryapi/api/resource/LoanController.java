@@ -1,6 +1,7 @@
 package br.com.escorpion.libraryapi.api.resource;
 
 import br.com.escorpion.libraryapi.api.dto.LoanDTO;
+import br.com.escorpion.libraryapi.api.dto.ReturnedLoanDTO;
 import br.com.escorpion.libraryapi.api.model.entity.Book;
 import br.com.escorpion.libraryapi.api.model.entity.Loan;
 import br.com.escorpion.libraryapi.api.service.BookService;
@@ -34,5 +35,12 @@ public class LoanController {
 
         loan = loanService.save(loan);
         return loan.getId();
+    }
+
+    @PatchMapping("{id}")
+    public void returnBook(@PathVariable Long id, @RequestBody ReturnedLoanDTO dto){
+        Loan loan = loanService.getById(id).get();
+        loan.setReturned(dto.isReturned());
+        loanService.update(loan);
     }
 }

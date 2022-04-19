@@ -1,6 +1,8 @@
 package br.com.escorpion.libraryapi.api.resource;
 
+import br.com.escorpion.libraryapi.api.dto.ReturnedLoanDTO;
 import br.com.escorpion.libraryapi.exception.BusinessException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hamcrest.Matchers;
@@ -34,6 +36,7 @@ import java.util.Optional;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(SpringExtension.class)
@@ -256,7 +259,7 @@ public class BookControllerTest {
         BDDMockito.given(service.find(Mockito.any(Book.class), Mockito.any(Pageable.class)))
                 .willReturn(new PageImpl<Book>(List.of(book), PageRequest.of(0, 100), 1));
 
-        var queryString = String.format("?title=%s&author=%s&page=0&size=100", book.getTitle(),book.getAuthor());
+        var queryString = String.format("?title=%s&author=%s&page=0&size=100", book.getTitle(), book.getAuthor());
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get(BOOK_API.concat(queryString))
@@ -271,4 +274,6 @@ public class BookControllerTest {
                 .andExpect(jsonPath("pageable.pageNumber").value(0))
         ;
     }
+
+
 }
