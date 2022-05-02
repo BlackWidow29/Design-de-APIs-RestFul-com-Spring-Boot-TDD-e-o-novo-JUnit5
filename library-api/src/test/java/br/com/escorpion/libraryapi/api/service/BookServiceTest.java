@@ -196,7 +196,7 @@ class BookServiceTest {
         assertThat(result.getTotalElements()).isEqualTo(1);
         assertThat(result.getContent()).isEqualTo(lista);
         assertThat(result.getPageable().getPageSize()).isEqualTo(10);
-        assertThat(result.getPageable().getPageNumber()).isEqualTo(10);
+        assertThat(result.getPageable().getPageNumber()).isEqualTo(0);
     }
 
     @Test
