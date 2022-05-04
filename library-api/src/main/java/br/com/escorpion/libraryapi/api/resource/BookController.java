@@ -28,10 +28,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BookController {
 
-    private final BookService bookService;
-
     private final LoanService loanService;
-
+    private final BookService bookService;
     private final ModelMapper modelMapper;
 
     @PostMapping

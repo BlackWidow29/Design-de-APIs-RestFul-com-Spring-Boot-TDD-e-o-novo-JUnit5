@@ -22,10 +22,12 @@ public class Loan {
     @Column
     private String isbn;
 
-    @Column
+    @Column(length = 100)
     private String customer;
 
-    @JoinColumn
+    @Column(name = "customer_email")
+    private String customerEmail;
+    @JoinColumn(name = "id_book")
     @ManyToOne
     private Book book;
 
