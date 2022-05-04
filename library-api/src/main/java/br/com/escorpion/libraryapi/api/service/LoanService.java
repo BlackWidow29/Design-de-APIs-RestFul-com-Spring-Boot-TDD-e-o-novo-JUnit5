@@ -1,6 +1,7 @@
 package br.com.escorpion.libraryapi.api.service;
 
 import br.com.escorpion.libraryapi.api.dto.LoanFilterDTO;
+import br.com.escorpion.libraryapi.api.model.entity.Book;
 import br.com.escorpion.libraryapi.api.model.entity.Loan;
 import br.com.escorpion.libraryapi.api.resource.BookController;
 import org.springframework.data.domain.Page;
@@ -16,4 +17,6 @@ public interface LoanService {
     Loan update(Loan loan);
 
     Page<Loan> find(LoanFilterDTO filter, Pageable pageable);
+
+    Page<Loan> getLoansByBook(Book book, Pageable pageable);
 }

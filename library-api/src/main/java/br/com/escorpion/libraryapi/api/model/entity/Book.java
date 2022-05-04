@@ -3,6 +3,7 @@ package br.com.escorpion.libraryapi.api.model.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Builder
 @Getter
@@ -23,4 +24,6 @@ public class Book {
     private String author;
     @Column
     private String isbn;
+    @OneToMany(mappedBy = "book")
+    private List<Loan> loans;
 }

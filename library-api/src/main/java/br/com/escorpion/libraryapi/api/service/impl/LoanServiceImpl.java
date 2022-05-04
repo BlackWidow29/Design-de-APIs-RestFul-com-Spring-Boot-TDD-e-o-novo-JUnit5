@@ -1,6 +1,7 @@
 package br.com.escorpion.libraryapi.api.service.impl;
 
 import br.com.escorpion.libraryapi.api.dto.LoanFilterDTO;
+import br.com.escorpion.libraryapi.api.model.entity.Book;
 import br.com.escorpion.libraryapi.api.model.entity.Loan;
 import br.com.escorpion.libraryapi.api.repository.LoanRepository;
 import br.com.escorpion.libraryapi.api.service.LoanService;
@@ -43,5 +44,10 @@ public class LoanServiceImpl implements LoanService {
     @Override
     public Page<Loan> find(LoanFilterDTO dto, Pageable page) {
         return repository.findByBookIsbnOrCustomer(dto.getIsbn(), dto.getCustomer(), page);
+    }
+
+    @Override
+    public Page<Loan> getLoansByBook(Book book, Pageable pageable) {
+        return repository.findByBook(book, pageable);
     }
 }
