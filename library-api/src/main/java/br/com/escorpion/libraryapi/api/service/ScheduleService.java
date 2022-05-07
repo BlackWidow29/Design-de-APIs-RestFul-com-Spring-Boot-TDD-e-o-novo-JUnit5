@@ -22,7 +22,7 @@ public class ScheduleService {
     private final LoanService loanService;
     private final EmailService emailService;
 
-    @Scheduled
+    @Scheduled(cron = CRON_LATE_LOANS)
     public void sendEmailToLateLoans() {
         List<Loan> allLateLoans = loanService.getAllLateLoans();
 
