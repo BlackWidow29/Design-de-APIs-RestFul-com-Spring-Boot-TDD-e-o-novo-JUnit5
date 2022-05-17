@@ -13,6 +13,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -31,6 +32,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/books")
 @RequiredArgsConstructor
+@Slf4j
 public class BookController {
 
     private final LoanService loanService;
@@ -41,7 +43,8 @@ public class BookController {
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
     public BookDTO create(@RequestBody @Valid BookDTO dto) {
-        var entity = modelMapper.map(dto, Book.class);
+        log.info("creating a book for isbn {}", dto.getIsbn());
+        Book entity = modelMapper.map(dto, Book.class);
         entity = bookService.save(entity);
         return modelMapper.map(entity, BookDTO.class);
     }
@@ -49,6 +52,7 @@ public class BookController {
     @ApiOperation("Obtains a book details by id")
     @GetMapping("{id}")
     public BookDTO get(@PathVariable Long id) {
+        log.info("obtaining details for book id {}", id);
         return bookService.getById(id).map(book -> modelMapper.map(book, BookDTO.class))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
